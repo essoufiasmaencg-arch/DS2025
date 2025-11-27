@@ -1,99 +1,127 @@
-1. Introduction / Objectif du dataset
+---
+title: "Analyse des livraisons — Last-mile Delivery Dataset (Inde)"
+author: "Ton Nom"
+date: "`r format(Sys.Date(), '%Y-%m-%d')`"
+---
 
-Le jeu de données décrit un ensemble de 25 000 enregistrements de livraisons “last-mile” (dernier kilomètre) à travers plusieurs régions d’Inde, effectuées par divers prestataires logistiques.
-L’objectif principal : offrir une représentation réaliste des opérations de livraison — avec les contraintes réelles (distance, mode de livraison, météo, type de colis, véhicule, etc.) — afin de permettre des analyses opérationnelles, logistiques, de coût, d’efficacité, d’impact environnemental, de délais et de qualité de service.
+# 1. Introduction
 
-Ce dataset se présente comme un outil approprié pour des travaux académiques, analytiques ou pour le secteur privé qui cherche à améliorer la performance logistique ou étudier des patterns dans les livraisons.
+Dans ce rapport, nous analysons un jeu de données simulées de **25 000 livraisons** effectuées en Inde, par divers prestataires logistiques, afin d’évaluer la performance opérationnelle, les délais, les coûts, l’impact des conditions (distance, météo, type de colis, véhicule, etc.) et la satisfaction client.
 
-2. Structure & Contenu — Description des colonnes / variables
+Objectifs :  
+- Décrire la structure des données.  
+- Identifier les facteurs influençant les retards et les échecs de livraison.  
+- Étudier les coûts en fonction des caractéristiques des livraisons.  
+- Analyser la qualité du service (via les notes clients).  
+- Proposer des recommandations / pistes d’optimisation.
 
-Chaque enregistrement (ligne) contient les informations suivantes :
+---
 
-delivery_id : identifiant unique de la livraison
+# 2. Description du dataset
 
-delivery_partner : le prestataire logistique (Prestataires présents : Delhivery, Blue Dart, Ekart, DHL, FedEx, Shadowfax, XpressBees, Amazon Logistics, Ecom Express).
+| Colonne | Description |
+|--------|-------------|
+| `delivery_id` | Identifiant unique de la livraison |
+| `delivery_partner` | Prestataire logistique (Delhivery, Blue Dart, Ekart, DHL, FedEx, Shadowfax, XpressBees, Amazon Logistics, Ecom Express) |
+| `package_type` | Type de colis (électronique, nourriture, meubles, objets fragiles, etc.) |
+| `vehicle_type` | Véhicule utilisé (bike/moto, van, camion, véhicule électrique, etc.) |
+| `delivery_mode` | Mode de livraison (Standard, Express, Same Day, Two Day) |
+| `region` | Région de livraison (Nord, Sud, Est, Ouest, Centre) |
+| `weather_condition` | Conditions météorologiques (Clair, Pluie, Brouillard, Tempête, Chaleur, Froid) |
+| `distance_km` | Distance parcourue (1 à 300 km) |
+| `package_weight_kg` | Poids du colis (0.2 à 50 kg) |
+| `delivery_time_hours` | Temps réel de livraison |
+| `expected_time_hours` | Temps estimé selon le mode de livraison |
+| `delayed` | Indicateur de retard (`Yes` / `No`) |
+| `delivery_status` | Statut final (Delivered, Delayed, Failed) |
+| `delivery_rating` | Note de satisfaction client (1 à 5) |
+| `delivery_cost` | Coût de la livraison (en fonction distance, poids, mode) |
 
-package_type : type de colis (électronique, nourriture, meubles, objets fragiles, etc.)
+Le dataset est propre : aucune valeur manquante, format homogène, valeurs dans des plages réalistes.  
 
-vehicle_type : type de véhicule utilisé (vélo/moto, van, camion, véhicule électrique, etc.)
+---
 
-delivery_mode : mode de livraison (Standard, Express, Same Day, Two Day)
+# 3. Méthodologie  
 
-region : région de livraison (Nord, Sud, Est, Ouest, Centre)
+## 3.1 Nettoyage / préparation des données  
 
-weather_condition : conditions météorologiques durant la livraison (Clair, Pluie, Brouillard, Tempête, Chaleur, Froid)
+- Chargement du fichier CSV  
+- Vérification des types de variables (catégorielles, numériques)  
+- Vérification de la cohérence des valeurs (par exemple : distance non négative, poids > 0, mode de livraison valide, etc.)  
+- Conversion / encodage des variables catégorielles si nécessaire  
 
-distance_km : distance parcourue en km (entre 1 et 300 km — ce qui couvre les livraisons urbaines, péri-urbaines, inter-urbaines)
+## 3.2 Analyses exploratoires (statistiques descriptives)
 
-package_weight_kg : poids du colis (0.2 à 50 kg)
+- Distribution des livraisons par prestataire, mode de livraison, type de colis, région, météo.  
+- Statistiques de base : moyenne, médiane, écart-type pour des variables comme `distance_km`, `package_weight_kg`, `delivery_time_hours`, `delivery_cost`.  
+- Proportions de livraisons retardées ou échouées, taux de réussite, moyenne des notes clients.
 
-delivery_time_hours : temps réel de livraison — durée totale utilisée (incluant les retards)
+## 3.3 Analyses de corrélation / relations  
 
-expected_time_hours : temps estimé initial selon le mode de livraison
+- Corrélation entre la distance (ou le poids) et le temps de livraison / retard / coût.  
+- Impact de la météo sur les délais et les échecs.  
+- Comparaison des performances entre prestataires et types de véhicule.  
+- Analyse coût vs service (coût moyen par mode / prestataire vs satisfaction client).  
 
-delayed : indicateur — livraison retardée ? (Yes/No) — si le temps réel dépasse l’estimation
+## 3.4 Visualisations  
 
-delivery_status : statut final (Delivered, Delayed, Failed) — dépend du retard ou d’un échec éventuel
+- Graphiques de distribution (histogrammes, boxplots) pour les variables numériques.  
+- Diagrammes en barres / secteurs pour les variables catégorielles (prévalence des modes, prestataires, météo, etc.).  
+- Graphiques de type scatter / heatmap pour explorer relations (distance vs coût, délai vs poids, etc.).  
 
-delivery_rating : évaluation client (note de 1 à 5), reflétant la satisfaction du service selon le résultat
+---
 
-delivery_cost : coût calculé de la livraison — prenant en compte distance, poids, mode de livraison (les modes rapides comme Express ou Same Day incluent des surtaxes)
+# 4. Résultats — Principaux constats (à compléter)  
 
-Le dataset est propre : pas de valeurs manquantes, consistance des champs, formatage conforme, valeurs dans des plages réalistes.
+## 4.1 Statistiques globales  
+*(ex. : moyenne distance, poids, coût, taux de retard, taux d’échec)*
 
-3. Ce que ce dataset permet d’analyser — Opportunités d’étude
+- Nombre total de livraisons analysées : 25 000  
+- Distribution des livraisons par mode / prestataire / région / météo …  
 
-Avec ces données, plusieurs axes d’analyse ou de recherche sont possibles :
+## 4.2 Facteurs influençant les retards / échecs  
 
-Analyse des délais : comparer le temps réel vs le temps estimé selon le mode, le prestataire, le véhicule, la météo, la distance, etc. Identifier les facteurs qui causent les retards (météo, distance, type de véhicule, package).
+- Impact de la météo (pluie, brouillard, tempête…) sur le taux de retards / échecs  
+- Influence de la distance et du poids sur le temps de livraison et les coûts  
+- Différences de performance entre prestataires ou types de véhicule  
 
-Efficacité logistique / optimisation des routes : étudier l’efficacité des livraisons selon les régions, le type de trajet (urbain vs inter-urbain), la densité de colis, le type de colis, etc.
+## 4.3 Analyse des coûts  
 
-Comportement des coûts : observer comment le coût évolue selon – distance, poids, mode de livraison, prestataire — et étudier des modèles de tarification ou des stratégies de réduction de coût.
+- Coût moyen de livraison selon le mode, la distance, le poids, le prestataire  
+- Corrélation entre coût et satisfaction client  
 
-Qualité de service & satisfaction client : croiser les retards, les échecs, le statut final avec la note client — pour identifier les leviers d’amélioration du service.
+## 4.4 Satisfaction client & qualité de service  
 
-Impact des conditions environnementales : mesurer l’effet de la météo (pluie, brouillard, chaleur, froid, tempête) sur les délais et les résultats — utile pour modéliser des risques ou prévoir des plans de contingence.
+- Distribution des notes (1–5)  
+- Relation entre retard / échec et note client  
+- Prestataires / modes de livraison ayant les meilleures notes moyennes  
 
-Comparaison de prestataires / flotte de véhicules : évaluer la performance (retards, échecs, coûts, satisfaction) selon les prestataires et le type de véhicule (bike, van, truck, EV).
+---
 
-Analyse multi-critères — par exemple, est-ce que les colis lourds + longues distances + mauvais temps augmentent de façon non linéaire les délais ou les coûts ?
+# 5. Discussion — Limites & biais  
 
-Ainsi, ce dataset est particulièrement bien adapté pour des analyses logistiques, optimisation, data-science appliquée au supply chain, modélisation de délais, etc.
+- Le dataset est **synthétique** — les résultats doivent être interprétés avec prudence avant de les généraliser à des opérations réelles.  
+- Absence d’informations fines : localisation exacte, horaire, contexte urbain/rural, nombre de tentatives, communications avec le client, etc.  
+- Modélisation simplifiée des échecs : dans la vraie vie, des tentatives de re-livraison, retards partiels ou communication client peuvent influencer les résultats.  
+- Potentiel biais de génération des données — certaines combinaisons distance/poids/météo/colis pourraient être sur- ou sous-représentées.  
 
-4. Forces et limites du dataset (qualité, utilité, biais possibles)
-✅ Forces / points positifs
+---
 
-Grande taille : 25 000 enregistrements, ce qui offre une base conséquente pour l’analyse statistique.
+# 6. Conclusion & Recommandations  
 
-Richesse des informations : nombreuses variables qualitatives et quantitatives — ce qui permet des analyses croisées variées.
+- Ce dataset constitue une **base solide** pour une première analyse des dynamiques de livraison last-mile (délais, coûts, service).  
+- Il permet d’identifier **des leviers potentiels d’optimisation** (choix véhicule, planification selon météo, segmentation colis, tarification selon distance/poids).  
+- Pour aller plus loin : combiner ce jeu de données avec des **données réelles** (tracking GPS, logs d’erreurs, retours clients), ou du moins simuler des scénarios plus complexes (tentatives multiples, retards partiels, priorisation des colis).  
+- Utiliser les résultats pour développer des recommandations pour des prestataires logistiques — ou pour prototyper un outil de **prévision de délai & coût / optimisation de route**.  
 
-Propreté des données : aucune valeur manquante, format uniforme, plausibilité des valeurs — ce qui réduit le travail de nettoyage et renforce la fiabilité.
+---
 
-Variété des scénarios : plusieurs prestataires, modes de livraison, types de colis, météo, distances — ce qui rend le dataset représentatif d’un large spectre de conditions réelles.
+# 7. Annexes / Méthodes (optionnel)  
 
-Sécurité / anonymat : pas d’information personnelle — donc utilisable librement pour recherche, analyses ou projets académiques / business.
+- Script de chargement et nettoyage des données (ex. en R / Python)  
+- Code pour les visualisations et analyses statistiques  
+- Tableaux complets de corrélations, distributions, sous-groupes (par prestataire, par mode, etc.)  
+- Définitions des catégories (type de colis, météo, etc.)  
 
-⚠️ Limitations & points de vigilance
+---
 
-Données synthétiques : le dataset a été généré via un pipeline de modélisation — ce qui peut impliquer des simplifications ou des hypothèses irréalistes. Certaines interactions complexes du monde réel (trafic, erreurs humaines, imprévus de livraison) peuvent ne pas être fidèlement reproduites.
-
-Absence d’informations temporelles fines ou géographiques précises : si le dataset n’inclut pas de fuseau horaire, d’heure exacte, de localisation GPS, d’adresse, ou de contexte urbain vs rural plus précis — cela limite les analyses fines (ex. « quel quartier ? pic trafic ? »).
-
-Modélisation des “échecs” / “livraisons ratées” possiblement simpliste — si la probabilité d’échec est simulée, elle pourrait ne pas refléter des comportements réels (ex. tentative de re-livraison, retour au dépôt, contact client, etc.).
-
-Biais potentiels selon la génération — si le pipeline de génération n’a pas bien calibré les distributions (distance, poids, météo, colis) selon la réalité, certaines catégories pourraient être sous- ou sur-représentées.
-
-Pas d’aspect humain / opérationnel — le dataset ne contient pas d’information sur le livreur, le nombre de tentatives, la satisfaction qualitative, les retours clients, etc. Ce qui limite certaines analyses socio-logistiques.
-
-5. Conclusion et recommandations d’utilisation
-
-Ce dataset est une excellente base “last-mile delivery” pour des analyses logistiques, des modèles d’optimisation, des études de coût et de retards, ou des projets de recherche sur la supply chain.
-
-Recommandations :
-
-Lors de l’analyse, être conscient que les données sont synthétiques — vérifier que les résultats / patterns observés soient plausibles pour des opérations réelles.
-
-Compléter (idéalement) avec des données réelles si possible — pour valider ou calibrer les modèles issus de ce dataset.
-
-Utiliser des visualisations et des indicateurs clés (delays %, moyenne de delivery_time vs expected_time, distribution des poids/distances, corrélations météo-retards, etc.) pour tirer des insights clairs et exploitables.
